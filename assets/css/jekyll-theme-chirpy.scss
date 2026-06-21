@@ -1,0 +1,284 @@
+---
+---
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* ============================================================
+   Lil'Log-style top navigation bar
+   Re-purposes Chirpy's fixed left #sidebar as a full-width top
+   bar. All element IDs the theme JS relies on (#sidebar,
+   #sidebar-trigger, #search*, #mode-toggle, #topbar-title) are
+   kept in the DOM so search / theme-toggle keep working.
+   ============================================================ */
+
+:root {
+  --nav-height: 3.5rem;
+  --nav-max-width: 1250px;
+}
+
+/* ---- The bar itself ---- */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  flex-direction: row;
+  align-items: center;
+  overflow: visible;
+  background: var(--main-bg);
+  border-right: 0;
+  border-bottom: 1px solid var(--sidebar-border-color);
+  z-index: 100;
+  padding: 0;
+}
+
+#nav-inner {
+  max-width: var(--nav-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ---- Brand ---- */
+#sidebar .nav-brand {
+  gap: 0.15rem;
+}
+
+#sidebar .site-title {
+  display: inline-block;
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  color: var(--site-title-color);
+}
+
+#sidebar .mode-toggle-btn {
+  padding: 0 0.4rem;
+  font-size: 1rem;
+  color: var(--text-muted-color);
+}
+
+#sidebar .mode-toggle-btn:hover {
+  color: var(--sidebar-active-color);
+}
+
+/* ---- Nav menu (links + search + social) ---- */
+#nav-menu {
+  gap: 1.25rem;
+}
+
+#sidebar .nav {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin: 0;
+  gap: 0.1rem;
+}
+
+/* Hamburger is desktop-hidden; shown only on mobile (see media query) */
+#sidebar #sidebar-trigger {
+  display: none;
+}
+
+#sidebar .nav-item {
+  width: auto;
+  margin: 0 !important;
+  padding: 0;
+  opacity: 1;
+}
+
+#sidebar .nav-item a.nav-link {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0 !important;
+  background: none !important;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+#sidebar .nav-item a.nav-link span {
+  font-size: 1rem;
+  letter-spacing: normal;
+}
+
+#sidebar .nav-item a.nav-link:hover {
+  background: none !important;
+  color: var(--sidebar-active-color);
+}
+
+#sidebar .nav-item.active a.nav-link {
+  background: none !important;
+  color: var(--site-title-color);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+}
+
+/* ---- Search (relocated from topbar into the nav) ---- */
+#sidebar .nav-search {
+  gap: 0.25rem;
+}
+
+#sidebar #search {
+  margin: 0 !important;
+  max-width: 11rem;
+}
+
+/* Trigger icon: only on small screens (desktop shows the inline box) */
+#sidebar #search-trigger {
+  display: none;
+  color: var(--text-color);
+}
+
+/* ---- Social ---- */
+#sidebar .nav-social {
+  gap: 0.65rem;
+  margin-left: 0.25rem;
+}
+
+#sidebar .nav-social a {
+  width: auto;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none !important;
+  font-size: 1.05rem;
+  color: var(--text-muted-color);
+}
+
+#sidebar .nav-social a:hover {
+  background: none;
+  color: var(--sidebar-active-color);
+}
+
+/* ---- Offset the page content below the fixed bar ---- */
+#main-wrapper {
+  margin-left: 0 !important;
+}
+
+#main-wrapper > .container {
+  padding-top: calc(var(--nav-height) + 0.5rem);
+}
+
+/* The old topbar strip is unused now */
+#topbar-wrapper {
+  display: none !important;
+}
+
+/* ============================================================
+   Mobile ( < lg / 992px ): brand + hamburger, links drop down
+   ============================================================ */
+@media (max-width: 991px) {
+  /* Keep the bar pinned (cancel Chirpy's off-canvas slide) */
+  #sidebar,
+  body[sidebar-display] #sidebar {
+    transform: none !important;
+    -webkit-transform: none !important;
+    height: var(--nav-height);
+  }
+
+  body[sidebar-display] #main-wrapper {
+    transform: none !important;
+    -webkit-transform: none !important;
+  }
+
+  /* Show the hamburger that toggles the dropdown */
+  #sidebar #sidebar-trigger {
+    display: inline-block;
+    color: var(--text-color);
+    font-size: 1.1rem;
+  }
+
+  /* Collapsible dropdown panel */
+  #nav-menu {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+    background: var(--main-bg);
+    border-bottom: 1px solid var(--sidebar-border-color);
+    transform: translateY(-150%);
+    transition: transform 0.25s ease;
+    z-index: 99;
+  }
+
+  body[sidebar-display] #nav-menu {
+    transform: translateY(0);
+  }
+
+  #sidebar .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0.1rem;
+  }
+
+  #sidebar .nav-item a.nav-link {
+    padding: 0.4rem 0;
+    font-size: 1.05rem;
+  }
+
+  #sidebar .nav-search {
+    width: 100%;
+  }
+
+  #sidebar #search {
+    display: flex;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  #sidebar .nav-social {
+    margin-left: 0;
+  }
+}
+
+/* ============================================================
+   Centered single-column reading layout (Lil'Log style)
+   The left sidebar is gone, so drop Chirpy's right-hand panel
+   and center the main reading column in the page.
+   ============================================================ */
+#panel-wrapper {
+  display: none !important;
+}
+
+#main-wrapper > .container > .row {
+  justify-content: center !important;
+}
+
+#main-wrapper > .container > .row > main {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  max-width: 48rem;
+}
+
+#tail-wrapper {
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ============================================================
+   Justified body text (post content + home-card excerpts)
+   ============================================================ */
+.content p,
+.content li,
+.card-wrapper .card-text p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}

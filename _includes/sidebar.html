@@ -1,0 +1,127 @@
+<!-- The Top Navigation Bar (overrides Chirpy's vertical sidebar) -->
+
+<aside aria-label="Navigation" id="sidebar" class="d-flex align-items-center">
+  <div id="nav-inner" class="d-flex align-items-center justify-content-between w-100">
+    <!-- Brand -->
+    <div class="nav-brand d-flex align-items-center">
+      <a class="site-title" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+
+      {% unless site.theme_mode %}
+        <button
+          type="button"
+          class="btn btn-link nav-link mode-toggle-btn"
+          aria-label="Switch Mode"
+          id="mode-toggle"
+        >
+          <i class="fas fa-adjust"></i>
+        </button>
+      {% endunless %}
+    </div>
+    <!-- .nav-brand -->
+
+    <!-- Mobile menu trigger -->
+    <button type="button" id="sidebar-trigger" class="btn btn-link" aria-label="Menu">
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <!-- Collapsible nav: links + search + social -->
+    <nav id="nav-menu" class="d-flex align-items-center">
+      <ul class="nav">
+        <!-- home -->
+        <li class="nav-item{% if page.layout == 'home' %}{{ " active" }}{% endif %}">
+          <a href="{{ '/' | relative_url }}" class="nav-link">
+            <span>{{ site.data.locales[include.lang].tabs.home | capitalize }}</span>
+          </a>
+        </li>
+        <!-- the real tabs -->
+        {% for tab in site.tabs %}
+          <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
+            <a href="{{ tab.url | relative_url }}" class="nav-link">
+              {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+              <span>{{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | capitalize }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Search (Chirpy search system; IDs are required by the JS) -->
+      <div class="nav-search d-flex align-items-center">
+        <button type="button" id="search-trigger" class="btn btn-link" aria-label="Search">
+          <i class="fas fa-search fa-fw"></i>
+        </button>
+
+        <search id="search" class="align-items-center">
+          <i class="fas fa-search fa-fw"></i>
+          <input
+            class="form-control"
+            id="search-input"
+            type="search"
+            aria-label="search"
+            autocomplete="off"
+            placeholder="{{ site.data.locales[include.lang].search.hint | capitalize }}..."
+          >
+        </search>
+        <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">
+          {{- site.data.locales[include.lang].search.cancel -}}
+        </button>
+      </div>
+      <!-- .nav-search -->
+
+      <!-- Social links -->
+      <div class="nav-social d-flex flex-wrap align-items-center">
+        {% for entry in site.data.contact %}
+          {%- assign url = null -%}
+
+          {% case entry.type %}
+            {% when 'github', 'twitter' %}
+              {%- unless site[entry.type].username -%}
+                {%- continue -%}
+              {%- endunless -%}
+              {%- capture url -%}
+                https://{{ entry.type }}.com/{{ site[entry.type].username }}
+              {%- endcapture -%}
+            {% when 'email' %}
+              {%- unless site.social.email -%}
+                {%- continue -%}
+              {%- endunless -%}
+              {%- assign email = site.social.email | split: '@' -%}
+              {%- capture url -%}
+                javascript:location.href = 'mailto:' + ['{{ email[0] }}','{{ email[1] }}'].join('@')
+              {%- endcapture -%}
+            {% when 'rss' %}
+              {% assign url = '/feed.xml' | relative_url %}
+            {% else %}
+              {% assign url = entry.url %}
+          {% endcase %}
+
+          {% if url %}
+            <a
+              href="{{ url }}"
+              aria-label="{{ entry.type }}"
+              {% assign link_types = '' %}
+
+              {% unless entry.noblank %}
+                target="_blank"
+                {% assign link_types = 'noopener noreferrer' %}
+              {% endunless %}
+
+              {% if entry.type == 'mastodon' %}
+                {% assign link_types = link_types | append: ' me' | strip %}
+              {% endif %}
+
+              {% unless link_types == empty %}
+                rel="{{ link_types }}"
+              {% endunless %}
+            >
+              <i class="{{ entry.icon }}"></i>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <!-- .nav-social -->
+    </nav>
+    <!-- #nav-menu -->
+  </div>
+  <!-- #nav-inner -->
+</aside>
+<!-- #sidebar -->
