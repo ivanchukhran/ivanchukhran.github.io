@@ -1,0 +1,55 @@
+# Telegram Instant View template for Ivan's blog (Chirpy / Jekyll)
+# Domain: ivanchukhran.github.io
+#
+# HOW TO USE
+# 1. Go to https://instantview.telegram.org/  ->  "My Templates"  ->  create a
+#    template for the domain ivanchukhran.github.io
+# 2. Paste a post URL (e.g. https://ivanchukhran.github.io/posts/Preface/) into
+#    the editor's URL field.
+# 3. Paste everything below into the template editor. Hit the preview to verify
+#    title / body / author / date all populate, then "Mark as ready" and submit
+#    for review (or just use the generated t.me/iv?url=... debug link privately).
+#
+# Notes:
+# - This targets the rendered DOM of a Chirpy post, NOT the Markdown source.
+# - Only post pages (/posts/...) should get Instant View; the home/listing/tag
+#   pages are excluded by the path condition below.
+
+~version: "2.1"
+
+# Only apply to actual blog posts. Other pages (home, tags, about) are skipped.
+?path: /posts/.+
+
+# ----- Core content -----------------------------------------------------------
+
+# The post body is the <div class="content"> inside <article>.
+# Scoped to //article so it never matches the "Recently Updated" panel or the
+# search-results container, which also carry a "content" class.
+body:  //article//div[has-class("content")]
+
+# Headline: the <h1> in the post header.
+title: //article//header//h1
+
+# ----- Metadata (read straight from the head's OpenGraph / article meta) -------
+
+site_name:      //meta[@property="og:site_name"]/@content
+published_date: //meta[@property="article:published_time"]/@content
+
+# Author name + link come from the post-meta byline (<em><a>...</a></em>).
+author:     //div[has-class("post-meta")]//em/a
+author_url: //div[has-class("post-meta")]//em/a/@href
+
+# Optional: link Instant Views to your Telegram channel so a "JOIN" button and
+# channel attribution appear. Uncomment and set your channel username.
+# channel: "@your_channel"
+
+# Optional social-preview image, if a post defines one via front matter `image:`.
+cover: //meta[@property="og:image"]/@content
+
+# ----- Cleanup ---------------------------------------------------------------
+# Strip the license + share-buttons footer that lives at the end of <article>.
+@remove: //div[has-class("post-tail-wrapper")]
+
+# Chirpy adds a TOC; in the body it shows up as anchor links inside headings.
+# Keep the heading text, drop the empty anchor wrapper if present.
+@remove: //a[has-class("anchor")]
